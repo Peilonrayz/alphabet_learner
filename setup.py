@@ -37,5 +37,7 @@ setup(
         "Programming Language :: Python :: 3.8",
     ],
     keywords="",
-    entry_points={"console_scripts": ["alphabet_learner=alphabet_learner.__main__:main"]},
+    entry_points={
+        "console_scripts": ["alphabet_learner=alphabet_learner.__main__:main"]
+    },
 )
