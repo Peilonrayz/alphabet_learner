@@ -37,4 +37,4 @@ To run all tests run ``nox``. No venv is needed; nox makes all of them for us.
 License
 -------
 
-alphabet_learner is available under the MIT license.
+Alphabet Learner is available under the MIT license.

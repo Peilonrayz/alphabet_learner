@@ -1,14 +1,22 @@
 #!/usr/bin/env python
 from setuptools import find_packages, setup
 
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
+
 with open("README.rst") as f:
     LONG_DESCRIPTION = f.read()
 
+config = configparser.ConfigParser()
+config.read("setup.cfg")
+
 setup(
     name="alphabet_learner",
-    version="0.0.0",
+    version=config.get("src", "version"),
     license="MIT",
-    description="Skeleton for Python projects.",
+    description="Learn an alphabet from the comfort of your terminal",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/x-rst",
     author="Peilonrayz",
@@ -31,6 +39,7 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
