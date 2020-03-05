@@ -6,7 +6,7 @@ import unicodedata
 from getpass import getpass
 
 from colorama import Fore, Style, init
-from . import weights as _weights
+from . import _weights
 from .alphabets import ALPHABETS
 
 
