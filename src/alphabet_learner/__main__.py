@@ -6,368 +6,119 @@ import unicodedata
 from getpass import getpass
 
 from colorama import Fore, Style, init
+from . import weights
+from .alphabets import ALPHABETS
+
 
 init()
-
-ALPHABETS = {
-    "Greek": {
-        "α": "alpha",
-        "Α": "Alpha",
-        "β": "beta",
-        "Β": "Beta",
-        "γ": "gamma",
-        "Γ": "Gamma",
-        "δ": "delta",
-        "Δ": "Delta",
-        "ε": "epsilon",
-        "Ε": "Epsilon",
-        "ζ": "zeta",
-        "Ζ": "Zeta",
-        "η": "eta",
-        "Η": "Eta",
-        "θ": "theta",
-        "Θ": "Theta",
-        "ι": "iota",
-        "Ι": "Iota",
-        "κ": "kappa",
-        "Κ": "Kappa",
-        "λ": "lambda",
-        "Λ": "Lambda",
-        "μ": "mu",
-        "Μ": "Mu",
-        "ν": "nu",
-        "Ν": "Nu",
-        "ξ": "xi",
-        "Ξ": "Xi",
-        "ο": "omicron",
-        "Ο": "Omicron",
-        "π": "pi",
-        "Π": "Pi",
-        "ρ": "rho",
-        "Ρ": "Rho",
-        "σ": "sigma",
-        "Σ": "Sigma",
-        "ς": "sigma",
-        "τ": "tau",
-        "Τ": "Tau",
-        "υ": "upsilon",
-        "Υ": "Upsilon",
-        "φ": "phi",
-        "Φ": "Phi",
-        "χ": "chi",
-        "Χ": "Chi",
-        "ψ": "psi",
-        "Ψ": "Psi",
-        "ω": "omega",
-        "Ω": "Omega",
-    },
-    "Hiragana": {
-        "ん": "n",
-        "あ": "a",
-        "か": "ka",
-        "さ": "sa",
-        "た": "ta",
-        "な": "na",
-        "は": "ha",
-        "ま": "ma",
-        "や": "ya",
-        "ら": "ra",
-        "わ": "wa",
-        "が": "ga",
-        "ざ": "za",
-        "だ": "da",
-        "ば": "ba",
-        "ぱ": "pa",
-        "きゃ": "kya",
-        "しゃ": "sha",
-        "ちゃ": "cha",
-        "にゃ": "nya",
-        "ひゃ": "hya",
-        "みゃ": "mya",
-        "りゃ": "rya",
-        "ぎゃ": "gya",
-        "じゃ": "ja",
-        "ぢゃ": "ja",
-        "びゃ": "bya",
-        "ぴゃ": "pya",
-        "い": "i",
-        "き": "ki",
-        "し": "shi",
-        "ち": "chi",
-        "に": "ni",
-        "ひ": "hi",
-        "み": "mi",
-        "り": "ri",
-        "ぎ": "gi",
-        "じ": "ji",
-        "ぢ": "ji",
-        "び": "bi",
-        "ぴ": "pi",
-        "う": "u",
-        "く": "ku",
-        "す": "su",
-        "つ": "tsu",
-        "ぬ": "nu",
-        "ふ": "fu",
-        "む": "mu",
-        "ゆ": "yu",
-        "る": "ru",
-        "ぐ": "gu",
-        "ず": "zu",
-        "づ": "dzu",
-        "ぶ": "bu",
-        "ぷ": "pu",
-        "きゅ": "kyu",
-        "しゅ": "shu",
-        "ちゅ": "chu",
-        "にゅ": "nyu",
-        "ひゅ": "hyu",
-        "みゅ": "myu",
-        "りゅ": "ryu",
-        "ぎゅ": "gyu",
-        "じゅ": "ju",
-        "ぢゅ": "ju",
-        "びゅ": "byu",
-        "ぴゅ": "pyu",
-        "え": "e",
-        "け": "ke",
-        "せ": "se",
-        "て": "te",
-        "ね": "ne",
-        "へ": "he",
-        "め": "me",
-        "れ": "re",
-        "げ": "ge",
-        "ぜ": "ze",
-        "で": "de",
-        "べ": "be",
-        "ぺ": "pe",
-        "お": "o",
-        "こ": "ko",
-        "そ": "so",
-        "と": "to",
-        "の": "no",
-        "ほ": "ho",
-        "も": "mo",
-        "よ": "yo",
-        "ろ": "ro",
-        "を": "wo",
-        "ご": "go",
-        "ぞ": "zo",
-        "ど": "do",
-        "ぼ": "bo",
-        "ぽ": "po",
-        "きょ": "kyo",
-        "しょ": "sho",
-        "ちょ": "cho",
-        "にょ": "nyo",
-        "ひょ": "hyo",
-        "みょ": "myo",
-        "りょ": "ryo",
-        "ぎょ": "gyo",
-        "じょ": "jo",
-        "ぢょ": "jo",
-        "びょ": "byo",
-        "ぴょ": "pyo",
-    },
-    "Katakana": {
-        "ン": "n",
-        "ア": "a",
-        "カ": "ka",
-        "サ": "sa",
-        "タ": "ta",
-        "ナ": "na",
-        "ハ": "ha",
-        "マ": "ma",
-        "ヤ": "ya",
-        "ラ": "ra",
-        "ワ": "wa",
-        "ガ": "ga",
-        "ザ": "za",
-        "ダ": "da",
-        "バ": "ba",
-        "パ": "pa",
-        "キャ": "kya",
-        "シャ": "sha",
-        "チャ": "cha",
-        "ニャ": "nya",
-        "ヒャ": "hya",
-        "ミャ": "mya",
-        "リャ": "rya",
-        "ギャ": "gya",
-        "ジャ": "ja",
-        "ヂャ": "ja",
-        "ビャ": "bya",
-        "ピャ": "pya",
-        "イ": "i",
-        "キ": "ki",
-        "シ": "shi",
-        "チ": "chi",
-        "ニ": "ni",
-        "ヒ": "hi",
-        "ミ": "mi",
-        "リ": "ri",
-        "ギ": "gi",
-        "ジ": "ji",
-        "ヂ": "ji",
-        "ビ": "bi",
-        "ピ": "pi",
-        "ウ": "u",
-        "ク": "ku",
-        "ス": "su",
-        "ツ": "tsu",
-        "ヌ": "nu",
-        "フ": "fu",
-        "ム": "mu",
-        "ユ": "yu",
-        "ル": "ru",
-        "グ": "gu",
-        "ズ": "zu",
-        "ヅ": "zu",
-        "ブ": "bu",
-        "プ": "pu",
-        "キュ": "kyu",
-        "シュ": "shu",
-        "チュ": "chu",
-        "ニュ": "nyu",
-        "ヒュ": "hyu",
-        "ミュ": "myu",
-        "リュ": "ryu",
-        "ギュ": "gyu",
-        "ジュ": "ju",
-        "ヂュ": "ju",
-        "ビュ": "byu",
-        "ピュ": "pyu",
-        "エ": "e",
-        "ケ": "ke",
-        "セ": "se",
-        "テ": "te",
-        "ネ": "ne",
-        "ヘ": "he",
-        "メ": "me",
-        "レ": "re",
-        "ゲ": "ge",
-        "ゼ": "ze",
-        "デ": "de",
-        "ベ": "be",
-        "ペ": "pe",
-        "オ": "o",
-        "コ": "ko",
-        "ソ": "so",
-        "ト": "to",
-        "ノ": "no",
-        "ホ": "ho",
-        "モ": "mo",
-        "ヨ": "yo",
-        "ロ": "ro",
-        "ヲ": "wo",
-        "ゴ": "go",
-        "ゾ": "zo",
-        "ド": "do",
-        "ボ": "bo",
-        "ポ": "po",
-        "キョ": "kyo",
-        "ショ": "sho",
-        "チョ": "cho",
-        "ニョ": "nyo",
-        "ヒョ": "hyo",
-        "ミョ": "myo",
-        "リョ": "ryo",
-        "ギョ": "gyo",
-        "ジョ": "jo",
-        "ヂョ": "jo",
-        "ビョ": "byo",
-        "ピョ": "pyo",
-    },
-}
 
 GOOD = Fore.CYAN + Style.BRIGHT
 BAD = Fore.RED + Style.BRIGHT
 RESET = Style.RESET_ALL
 
 
-def weight(incorrect, correct):
-    return max(1, incorrect - correct)
-
-
-def weights(weights):
-    total = sum(weights) or 1
-    return [weight / total for weight in weights]
-
-
-class Weight:
-    def __init__(self, keys):
-        self.correct = 0
-        self.incorrect = 0
-        self.native = {foreign: 0 for foreign in keys}
-
-    def weight(self):
-        return weight(self.incorrect, self.correct)
-
-    def weights(self, keys):
-        return weights([weight(self.native[key], self.correct) for key in keys])
-
-
 def iter_chunks(items, amount, fillvalue=None):
     return itertools.zip_longest(*amount * [iter(items)], fillvalue=fillvalue,)
 
 
+class Weight:
+    def __init__(self, weight, weights):
+        self._weight = weight
+        self._weights = weights
+        self.correct = 0
+        self.incorrect = 0
+
+    @classmethod
+    def from_dict(cls, key, items):
+        return cls(
+            weights.LetterWeight(key, items[key]),
+            weights.Weights({
+                weights.LettersWeight(key, value)
+                for key, value in items.items()
+            })
+        )
+    
+    @property
+    def key(self):
+        return self._weight.key
+    
+    @property
+    def value(self):
+        return self._weight.value
+
+    def guess(self, guess):
+        correct = self._weight.guess(guess)
+        if correct:
+            self.correct += 1
+        else:
+            self.incorrect += 1
+            self._weights.guess(guess)
+        return correct
+    
+    def correct(self):
+        self._weight.correct()
+        self._weights.correct()
+    
+    def weight(self):
+        return self._weight.weight(self._weight.key)
+    
+    def weights(self):
+        return self._weight.weights()
+
+
 class Weights:
     def __init__(self, alphabet):
+        self._weights = weights.Weights(
+            Weight.from_dict(key, alphabet)
+            for key in alphabet.keys()
+        )
+
         self.keys = list(alphabet.keys())
-        natives = {}
-        for foreign, native in alphabet.items():
-            natives.setdefault(native, set()).add(foreign)
-        self._native = natives
-        self._weights = {foreign: Weight(self.keys) for foreign in self.keys}
-        self._weights[None] = Weight(self.keys)
 
     def add(self, foreign, native):
         weight = self._weights[foreign]
-        other_foreign = self._native.get(native, set())
-        if foreign in other_foreign:
-            weight.correct += 1
-        else:
-            weight.incorrect += 1
-            for other in other_foreign:
-                weight.native[other] += 1
-
-    def _gen_weights(self, previous, keys):
-        return weights(
-            [0 if key == previous else self._weights[key].weight() for key in keys]
-        )
+        if weight.guess(native):
+            weight.correct()
 
     def weights(self, previous):
+        if previous is None:
+            return self._weights.weights()
         return [
             (a + b) / 2
             for a, b in zip(
-                self._gen_weights(previous, self.keys),
-                self._weights[previous].weights(self.keys),
+                self._weights.weights({previous}),
+                self._weights[previous].weights({previous}),
             )
         ]
+    
+    def format(self, width, space=" "):
+        return WeightsFormat.format(width, self._weights, space)
 
-    def get_format(self):
-        foreign_size = max(len(foreign or "") for foreign in self._weights)
-        correct_size = max(
-            len(str(weight.correct)) for weight in self._weights.values()
-        )
-        total_size = max(
-            len(str(weight.correct + weight.incorrect))
-            for weight in self._weights.values()
-        )
+
+class WeightsFormat:
+    @staticmethod
+    def get_size(items):
+        return max(len(str(item)) for item in items)
+
+    @classmethod
+    def get_format(cls, weights, space=" "):
+        key_size = cls.get_size(weight.key or "" for weight in weights)
+        correct_size = cls.get_size(weight.correct for weight in weights)
+        total_size = cls.get_size(weight.correct + weight.incorrect for weight in weights)
         return (
-            f"{{f_color}}{{:　<{foreign_size}}}{{reset}}"
+            f"{{f_color}}{{:{space}<{key_size}}}{{reset}}"
             f" {{c_color}}{{: >{correct_size}}}{{reset}}"
             f"{{div}}{{t_color}}{{: >{total_size}}}{{reset}}",
-            foreign_size + correct_size + total_size + 2,
+            key_size + correct_size + total_size + 2,
         )
 
-    def _format_chunk(self, format, chunk):
-        for value in chunk:
-            if value is None:
+    @staticmethod
+    def _format_chunk(format, chunk):
+        for weight in chunk:
+            if weight is None:
                 yield ""
                 continue
-            foreign, weight = value
+            foreign = weight.key
             total = weight.correct + weight.incorrect
             c_color = ""
             f_color = ""
@@ -396,16 +147,17 @@ class Weights:
                 div=div,
             )
 
-    def format(self, width):
-        format, format_size = self.get_format()
+    @classmethod
+    def format(cls, width, weights, space=" "):
+        format, format_size = cls.get_format(weights, space=space)
         amount = (width + 1) // (format_size + 1)
         return "\n".join(
-            " ".join(self._format_chunk(format, chunk))
+            " ".join(cls._format_chunk(format, chunk))
             for chunk in iter_chunks(
                 (
-                    (foreign, weight)
-                    for foreign, weight in self._weights.items()
-                    if foreign is not None
+                    weight
+                    for weight in weights
+                    if weight.key is not None
                 ),
                 amount,
             )
@@ -727,14 +479,14 @@ def select_options():
 
 
 def main():
-    alphabet, single, correct, incorrect = select_options()
-    Alphabet(alphabet, show_correct=correct, show_incorrect=incorrect,).run(
-        single=single
-    )
+    try:
+        alphabet, single, correct, incorrect = select_options()
+        Alphabet(alphabet, show_correct=correct, show_incorrect=incorrect,).run(
+            single=single
+        )
+    except KeyboardInterrupt:
+        pass
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        pass
+    main()
