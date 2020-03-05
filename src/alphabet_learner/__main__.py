@@ -6,7 +6,7 @@ import unicodedata
 from getpass import getpass
 
 from colorama import Fore, Style, init
-from . import weights
+from . import weights as _weights
 from .alphabets import ALPHABETS
 
 
@@ -31,9 +31,9 @@ class Weight:
     @classmethod
     def from_dict(cls, key, items):
         return cls(
-            weights.LetterWeight(key, items[key]),
-            weights.Weights({
-                weights.LettersWeight(key, value)
+            _weights.LetterWeight(key, items[key]),
+            _weights.Weights({
+                _weights.LettersWeight(key, value)
                 for key, value in items.items()
             })
         )
@@ -55,20 +55,20 @@ class Weight:
             self._weights.guess(guess)
         return correct
     
-    def correct(self):
-        self._weight.correct()
-        self._weights.correct()
+    def update(self):
+        self._weight.update()
+        self._weights.update()
     
     def weight(self):
         return self._weight.weight(self._weight.key)
     
-    def weights(self):
-        return self._weight.weights()
+    def weights(self, ignore=None):
+        return self._weight.weights(ignore=ignore)
 
 
 class Weights:
     def __init__(self, alphabet):
-        self._weights = weights.Weights(
+        self._weights = _weights.Weights(
             Weight.from_dict(key, alphabet)
             for key in alphabet.keys()
         )
@@ -78,7 +78,7 @@ class Weights:
     def add(self, foreign, native):
         weight = self._weights[foreign]
         if weight.guess(native):
-            weight.correct()
+            weight.update()
 
     def weights(self, previous):
         if previous is None:
@@ -87,7 +87,7 @@ class Weights:
             (a + b) / 2
             for a, b in zip(
                 self._weights.weights({previous}),
-                self._weights[previous].weights({previous}),
+                self._weights[previous]._weights.weights({previous}),
             )
         ]
     
@@ -283,8 +283,9 @@ class Alphabet:
     def _guesses(self):
         previous = None
         while True:
+            weights = self._weights.weights(previous)
             (foreign,) = random.choices(
-                self._weights.keys, weights=self._weights.weights(previous),
+                self._weights.keys, weights=weights,
             )
             if previous == foreign:
                 continue
@@ -307,6 +308,7 @@ class Alphabet:
         return guess
 
     def _run_multiple(self):
+        foreign = None
         try:
             for foreign, native in self._guesses():
                 guess = None
@@ -316,7 +318,8 @@ class Alphabet:
                         break
                     guess = self._guess(foreign)
         finally:
-            console.print(f"\n\n{foreign} -> {native}")
+            if foreign is not None:
+                console.print(f"\n\n{foreign} -> {native}")
 
     def _run_single(self):
         try:

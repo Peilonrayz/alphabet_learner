@@ -15,7 +15,7 @@ class Weight:
         self._guess += 1
         return guess == self.value
     
-    def correct(self):
+    def update(self):
         if self._guess:
             self._guesses.append(self._guess)
 
@@ -27,7 +27,7 @@ class Weight:
             self._weight(key)
         raise ValueError(f'No weight {weight}')
 
-    def weights(self):
+    def weights(self, ignore=None):
         return [self._weight()]
 
 
@@ -39,7 +39,7 @@ class LetterWeight(Weight):
 
 
 class LettersWeight(Weight):
-    def _weight(self, key):
+    def _weight(self):
         correct = len(self._guesses)
         incorrect = sum(self._guesses)
         return max(1, incorrect - correct + 1)
@@ -65,16 +65,16 @@ class Weights:
             for key in self._by_value.get(guess, [])
         )
 
-    def correct(self):
+    def update(self):
         for weight in self._weights.values():
-            weight.correct()
+            weight.update()
 
     def weight(self, key):
         return self._weights[key].weight(key)
 
     def weights(self, ignore=None):
         ignore = set(ignore or [])
-        return flatten([
+        return list(flatten([
             weight.weights() if key not in ignore else [0]
             for key, weight in self._weights.items()
-        ])
+        ]))
