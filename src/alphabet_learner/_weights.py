@@ -14,18 +14,18 @@ class Weight:
     def guess(self, guess):
         self._guess += 1
         return guess == self.value
-    
+
     def update(self):
         if self._guess:
             self._guesses.append(self._guess)
 
     def _weight(self):
-        raise NotImplementedError('Weight.weight is not implemented')
+        raise NotImplementedError("Weight.weight is not implemented")
 
     def weight(self, key):
         if key == self.key:
             self._weight(key)
-        raise ValueError(f'No weight {weight}')
+        raise ValueError(f"No weight {weight}")
 
     def weights(self, ignore=None):
         return [self._weight()]
@@ -52,17 +52,16 @@ class Weights:
         for weight in weights:
             by_value.setdefault(weight.value, []).append(weight.key)
         self._by_value = by_value
-    
+
     def __getitem__(self, key):
         return self._weights[key]
-    
+
     def __iter__(self):
         return iter(self._weights.values())
 
     def guess(self, guess):
         return any(
-            self._weights[key].guess(guess)
-            for key in self._by_value.get(guess, [])
+            self._weights[key].guess(guess) for key in self._by_value.get(guess, [])
         )
 
     def update(self):
@@ -74,7 +73,11 @@ class Weights:
 
     def weights(self, ignore=None):
         ignore = set(ignore or [])
-        return list(flatten([
-            weight.weights() if key not in ignore else [0]
-            for key, weight in self._weights.items()
-        ]))
+        return list(
+            flatten(
+                [
+                    weight.weights() if key not in ignore else [0]
+                    for key, weight in self._weights.items()
+                ]
+            )
+        )
