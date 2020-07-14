@@ -1,6 +1,7 @@
 import itertools
 
 from . import _weights
+from .ansi import GOOD, BAD, RESET
 
 
 def iter_chunks(items, amount, fillvalue=None):

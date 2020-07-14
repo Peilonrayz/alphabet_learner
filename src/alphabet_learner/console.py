@@ -1,5 +1,7 @@
 import collections
 
+from .ansi import ANSI
+
 
 class Console:
     def __init__(self, size=5):

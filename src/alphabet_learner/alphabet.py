@@ -100,7 +100,6 @@ class Alphabet:
         return guess
 
     def _run_multiple(self):
-        foreign = None
         try:
             for foreign, native in self._guesses():
                 guess = None
@@ -110,8 +109,7 @@ class Alphabet:
                         break
                     guess = self._guess(foreign)
         finally:
-            if foreign is not None:
-                console.print(f"\n\n{foreign} -> {native}")
+            console.print(f"\n\n{foreign} -> {native}")
 
     def _run_single(self):
         try:
