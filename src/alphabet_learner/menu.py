@@ -22,9 +22,12 @@ def menu(head, options, selection=0):
         while True:
             console.print(
                 "\n".join(
-                    GOOD + "> " + option + RESET
-                    if index == selection
-                    else "  " + option
+                    (
+                        GOOD + "> " + option + RESET
+                        if index == selection
+                        else "  " + option
+                    )
+                    + "\r"
                     for index, option in enumerate(options)
                 )
             )
@@ -47,9 +50,12 @@ def multi_menu(head, options, selection=0, selections=None):
         while True:
             console.print(
                 "\n".join(
-                    f'{GOOD}[{"x" if index in selections else " "}] {option}{RESET}'
-                    if index == selection
-                    else f'[{"x" if index in selections else " "}] {option}'
+                    (
+                        f'{GOOD}[{"x" if index in selections else " "}] {option}{RESET}'
+                        if index == selection
+                        else f'[{"x" if index in selections else " "}] {option}'
+                    )
+                    + "\r"
                     for index, option in enumerate(options)
                 )
             )
